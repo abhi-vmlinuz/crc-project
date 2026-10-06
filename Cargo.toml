@@ -1,0 +1,13 @@
+[workspace]
+resolver = "3"
+members = ["crc-core", "crc-tui"]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2024"
+rust-version = "1.85"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+strip = true

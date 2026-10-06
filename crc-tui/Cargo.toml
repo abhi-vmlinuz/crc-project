@@ -1,0 +1,15 @@
+[package]
+name = "crc-tui"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Interactive CRC laboratory: long-division visualisation, error injection, burst analysis"
+
+[[bin]]
+name = "crc-tui"
+path = "src/main.rs"
+
+[dependencies]
+crc-core = { path = "../crc-core" }
+ratatui = "0.29"
+crossterm = "0.28"

@@ -1,0 +1,8 @@
+[package]
+name = "crc-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+description = "Parameterised CRC engine: computation, long-division trace, syndrome location, Monte-Carlo burst analysis"
+
+[dependencies]

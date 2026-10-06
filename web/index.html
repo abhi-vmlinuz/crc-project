@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CRC Lab — Cyclic Redundancy Check</title>
+    <meta
+      name="description"
+      content="Textbook CRC demonstration: enter data bits and generator bits, see the division, inject errors, verify."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>CRC Lab</h1>
+      <span class="sub">Cyclic Redundancy Check — error detection</span>
+      <span class="spacer"></span>
+      <button id="export" title="Download a PDF report of this exact computation">Export</button>
+      <span class="status ok" id="status"><span class="dot"></span><span id="status-text">no error</span></span>
+    </header>
+
+    <main>
+      <div class="col">
+        <section class="panel">
+          <h2>1 · Inputs <span class="tag" id="inputs-tag">—</span></h2>
+          <div class="body">
+            <label class="field-label">Data as</label>
+            <div class="btn-row" style="margin-top: 0" role="group" aria-label="data input mode">
+              <button id="mode-text" class="primary">Text</button>
+              <button id="mode-bits">Bits</button>
+            </div>
+
+            <div id="data-text-wrap" style="margin-top: 12px">
+              <label class="field-label" for="data-text">Message — type anything live (ask the examiner for a word)</label>
+              <input type="text" id="data-text" value="HELLO" placeholder="Type a word here…" spellcheck="false" autocomplete="off" maxlength="12" />
+            </div>
+
+            <div id="data-bits-wrap" style="margin-top: 12px; display: none">
+              <label class="field-label" for="data">Data bits (binary, e.g. 1011001)</label>
+              <input type="text" id="data" value="1011001" placeholder="e.g. 1011001" spellcheck="false" autocomplete="off" />
+            </div>
+            <div class="note" id="data-hint"></div>
+
+            <label class="field-label" for="gen" style="margin-top: 12px">Generator bits (binary, e.g. 1011)</label>
+            <input type="text" id="gen" value="1011" spellcheck="false" autocomplete="off" />
+            <div class="note" id="gen-hint"></div>
+
+            <dl class="fields" id="tx-fields" style="margin-top: 13px"></dl>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>2 · Transmitted frame <span class="tag" id="frame-tag">—</span></h2>
+          <div class="body">
+            <div class="ribbon" id="tx-ribbon" role="img" aria-label="transmitted frame bits"></div>
+            <div class="ribbon-legend">
+              <span><i class="swatch" style="background:#d6e2ec"></i>data bit</span>
+              <span><i class="swatch" style="background:#b78cf7"></i>CRC bit</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="panel">
+          <h2>3 · Division (sender side) <span class="tag" id="division-tag">—</span></h2>
+          <div class="body">
+            <div class="division" id="division" aria-live="off"></div>
+            <div class="division-controls">
+              <button id="prev" title="previous step">◀ Prev</button>
+              <button id="play" class="primary" title="auto step through the division">Play</button>
+              <button id="next" title="next step">Next ▶</button>
+              <input type="range" id="scrub" class="scrub" min="0" max="0" value="0" aria-label="division step" />
+              <span class="step-label" id="step-label">step 0 / 0</span>
+            </div>
+            <div class="note">
+              Same shape as the long division you learned in school — quotient on top,
+              one staggered subtraction row per step. The only difference: "subtract"
+              means XOR, because in binary arithmetic without carries subtraction and
+              XOR are the same thing (never any borrows). Play walks through it
+              automatically; Prev / Next (or the slider) move one step at a time.
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>4 · Channel + receiver <span class="tag" id="verdict-tag">—</span></h2>
+          <div class="body">
+            <div class="btn-row" style="margin-top: 0">
+              <button id="flip-one">Flip one bit</button>
+              <button id="clear" class="danger">Reset (no error)</button>
+            </div>
+
+            <div class="ribbon" id="rx-ribbon" role="img" aria-label="received frame bits" style="margin-top: 13px"></div>
+            <div class="ribbon-legend">
+              <span><i class="swatch" style="background:#d6e2ec"></i>data bit</span>
+              <span><i class="swatch" style="background:#b78cf7"></i>CRC bit</span>
+              <span><i class="swatch" style="background:#ff6b6b"></i>flipped by the channel</span>
+              <span>tip: click any bit to flip it</span>
+            </div>
+
+            <div id="verdict-box" style="margin-top: 15px"></div>
+            <dl class="fields" id="rx-fields"></dl>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        How to explain it: append <code>n−1</code> zeros to the data (n = generator length),
+        divide by the generator with XOR, the leftover is the CRC. Send data + CRC.
+        The receiver divides what arrives by the same generator — remainder zero means
+        no error. One flipped bit makes the remainder non-zero.
+      </p>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

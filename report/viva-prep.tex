@@ -1,0 +1,94 @@
+% ============================================================
+% CRC Lab — viva preparation sheet (read before the presentation).
+% ============================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries CRC Lab --- Viva Preparation Sheet} \\[0.4em]
+{\normalsize Read this once, then walk in. Total demo: about 2 minutes.}
+\end{center}
+
+\vspace{0.5em}
+\hrule
+\vspace{1em}
+
+\section*{1. The one paragraph (memorize this)}
+
+CRC appends $n-1$ zeros to the data, divides by the generator using XOR,
+and the leftover is the CRC. We transmit data + CRC. The receiver divides
+what arrives by the same generator: remainder zero means no error,
+non-zero means a bit flipped. XOR replaces subtraction because binary
+arithmetic has no borrows. If they ask nothing else, say this and offer to
+type their example live.
+
+\section*{2. Minute-by-minute demo}
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item \textbf{Inputs (30s).} Default \texttt{HELLO} + \texttt{1011}.
+  Read the numbers live: data bits, 3 appended zeros, remainder, frame.
+  \item \textbf{Division (30s).} Press Play. Narrate: quotient on top,
+  one staggered subtraction row per step, $\oplus$ where the leading 1
+  was cancelled.
+  \item \textbf{Error (30s).} Flip exactly one bit. Red bit, remainder
+  non-zero, verdict ERROR. Say: one flipped bit, caught.
+  \item \textbf{Reset + live input (30s).} Reset to VALID. Ask the
+  examiner for a word, type it. Everything recomputes.
+  \item \textbf{Report (15s).} Hit Export, show the PDF matches the
+  screen: same inputs, every division step, same verdict.
+\end{enumerate}
+
+Golden rule: Reset before every flip demo. One flip, show, reset. Never
+stack many flips on stage (Section~4 explains why).
+
+\section*{3. Likely questions, one-line answers}
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Why append $n-1$ zeros?} To make room for the remainder;
+  a remainder modulo an $n$-bit generator is always $n-1$ bits.
+  \item \textbf{Why must the generator start and end with 1?} Leading 1
+  sets its degree; trailing 1 means it catches all single-bit errors.
+  \item \textbf{Why XOR, not subtraction?} In mod-2 arithmetic they are
+  identical; XOR just has no borrows.
+  \item \textbf{Does CRC correct errors?} No, detection only. It says
+  \textit{that} something changed, never what the original was.
+  \item \textbf{Text vs Bits mode?} Text converts each character to
+  8-bit ASCII first; the division always runs on bits.
+  \item \textbf{What did you build vs reuse?} Everything: the division
+  engine, both UIs, the LaTeX exporter. Only \texttt{pdflatex} itself
+  is external.
+\end{itemize}
+
+\section*{4. The trap: VALID with flipped bits}
+
+If you flip several bits, their remainders can XOR to zero and cancel,
+so the verdict reads VALID. This is genuine theory, verified during
+development: single-bit errors are always caught; some multi-bit
+patterns are exact multiples of the generator and slip through. If the
+examiner spots it, say exactly that. Then reset and demo a single flip.
+
+\section*{5. Day checklist}
+
+\begin{itemize}[leftmargin=1.5em]
+  \item \texttt{python3 report/server.py} running before they arrive;
+  browser open at \texttt{http://127.0.0.1:8321/}.
+  \item TUI binary tested once in their terminal size
+  (\texttt{./target/release/crc-tui}): \texttt{d} edits message,
+  \texttt{g} edits generator, \texttt{space} plays, \texttt{e} flips,
+  \texttt{x} resets, \texttt{t} changes theme, \texttt{?} help.
+  \item One sample PDF in hand or on disk.
+  \item If stuck on any question: return to the memorized paragraph
+  and offer a live example.
+\end{itemize}
+
+\end{document}
